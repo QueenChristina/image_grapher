@@ -1,0 +1,172 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Graph.gd" type="Script" id=1]
+
+[node name="Graph" type="Node2D"]
+script = ExtResource( 1 )
+
+[node name="xAxis" type="Line2D" parent="."]
+width = 5.0
+default_color = Color( 0.647059, 0.705882, 1, 1 )
+
+[node name="yAxis" type="Line2D" parent="."]
+width = 5.0
+default_color = Color( 0.647059, 0.705882, 1, 1 )
+
+[node name="selectImage" type="FileDialog" parent="."]
+margin_left = 280.0
+margin_top = 134.0
+margin_right = 790.0
+margin_bottom = 480.0
+window_title = "Select an image to use for graphing"
+resizable = true
+mode = 0
+access = 2
+current_dir = "/CodingProjects/DesmosButBetter"
+current_path = "/CodingProjects/DesmosButBetter/"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="labelInput" type="VBoxContainer" parent="UI"]
+margin_left = 924.0
+margin_top = 102.0
+margin_right = 1010.0
+margin_bottom = 266.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="minX" type="LineEdit" parent="UI/labelInput"]
+margin_right = 86.0
+margin_bottom = 24.0
+placeholder_text = "minX"
+
+[node name="maxX" type="LineEdit" parent="UI/labelInput"]
+margin_top = 28.0
+margin_right = 86.0
+margin_bottom = 52.0
+placeholder_text = "maxX"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="minY" type="LineEdit" parent="UI/labelInput"]
+margin_top = 56.0
+margin_right = 86.0
+margin_bottom = 80.0
+placeholder_text = "minY"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="maxY" type="LineEdit" parent="UI/labelInput"]
+margin_top = 84.0
+margin_right = 86.0
+margin_bottom = 108.0
+placeholder_text = "maxY"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="stepX" type="LineEdit" parent="UI/labelInput"]
+margin_top = 112.0
+margin_right = 86.0
+margin_bottom = 136.0
+placeholder_text = "label stepX"
+
+[node name="stepY" type="LineEdit" parent="UI/labelInput"]
+margin_top = 140.0
+margin_right = 86.0
+margin_bottom = 164.0
+placeholder_text = "label stepy"
+
+[node name="equationInput" type="VBoxContainer" parent="UI"]
+margin_left = 881.0
+margin_top = 9.0
+margin_right = 1012.0
+margin_bottom = 61.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="equation" type="LineEdit" parent="UI/equationInput"]
+margin_right = 131.0
+margin_bottom = 24.0
+placeholder_text = "y = "
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="deltaX" type="LineEdit" parent="UI/equationInput"]
+margin_top = 28.0
+margin_right = 131.0
+margin_bottom = 52.0
+placeholder_text = "deltaX for curve"
+
+[node name="deltaXImg" type="LineEdit" parent="UI/equationInput"]
+margin_top = 56.0
+margin_right = 131.0
+margin_bottom = 80.0
+placeholder_text = "deltaX for images"
+
+[node name="colors" type="VBoxContainer" parent="UI"]
+margin_left = 933.0
+margin_top = 510.0
+margin_right = 1009.0
+margin_bottom = 578.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="axis" type="ColorPickerButton" parent="UI/colors"]
+margin_right = 76.0
+margin_bottom = 20.0
+text = "Axis Color"
+flat = true
+color = Color( 0.647059, 0.705882, 1, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="labels" type="ColorPickerButton" parent="UI/colors"]
+margin_top = 24.0
+margin_right = 76.0
+margin_bottom = 44.0
+text = "Axis Color"
+flat = true
+color = Color( 0.85098, 0.937255, 0.996078, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="graph" type="ColorPickerButton" parent="UI/colors"]
+margin_top = 48.0
+margin_right = 76.0
+margin_bottom = 68.0
+text = "Axis Color"
+flat = true
+color = Color( 0.388235, 0.447059, 0.905882, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="background" type="CanvasLayer" parent="."]
+layer = -2
+
+[node name="custom" type="TextureRect" parent="background"]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="default" type="ColorRect" parent="background"]
+margin_top = -15.0
+margin_right = 1027.0
+margin_bottom = 597.0
+__meta__ = {
+"_edit_use_anchors_": false
+}

@@ -6,6 +6,7 @@ onready var y_axis = $yAxis
 onready var input_eq = $UI/equationInput
 onready var input_labels = $UI/labelInput
 onready var input_colors = $UI/colors
+onready var input_visibility = $UI/show
 
 #graph tile image
 var tile_img = preload("res://icon.png")
@@ -24,7 +25,7 @@ var graph
 var graph_tiles = []
 
 #stores the colors of the label lines
-var color_label_lines =  Color(0.9, 0.95, 0.98)
+var color_label_lines =  Color("dce3e8")
 var color_graph_line =  Color(0.6, 0.7, 0.9)
 var color_axis = Color("a5b4ff")
 
@@ -50,6 +51,15 @@ var real_step_y
 var origin_x = 0
 var origin_y = 0
 
+#speed factors of zooming and panning. Smaller is slower
+#to do: change factor depending on size window (min/max x) 
+#because speed should be relative to window size (right now speed is constant regardless window size)
+var speed_pan = 0.3
+var speed_zoom = 0.9
+
+var is_mouse_in_ui = false
+var is_color_picking = false
+
 func _ready():
 	draw_axis()
 	connect_to_input()
@@ -65,31 +75,109 @@ func _ready():
 	#default equation for now
 	equation.parse("x", ["x"])
 
+func _input(event):
+	#also make sure mouse is on map and NOT a UI ex. not color picking
+	if !is_mouse_in_ui and !is_color_picking:
+		if Input.is_action_pressed("mouse_right") and event is InputEventMouseMotion:
+			#Zooming in with special control depending on direction mouse
+			var change_pos = speed_zoom*event.relative.normalized()
+			max_x += change_pos.x
+			min_x -= change_pos.x
+			max_y += change_pos.y
+			min_y -= change_pos.y
+			#print("The new min x: " + str(min_x) + " max " + str(max_x))
+			#only redraw every so often, and not every change
+			call_deferred("draw_axis")
+			call_deferred("draw_graph")
+		elif Input.is_action_pressed("mouse_left") and event is InputEventMouseMotion:
+			#panning
+			var change_pos = speed_pan*event.relative.normalized()
+			max_x -= change_pos.x
+			min_x -= change_pos.x
+			max_y += change_pos.y
+			min_y += change_pos.y
+			call_deferred("draw_axis")
+			call_deferred("draw_graph")
+		
 #connects line edits text inputs (press enter in line) to this
 func connect_to_input():
 	for child in ( input_labels.get_children() + input_eq.get_children() ):
 		if child.get_class() == "LineEdit":
 			child.connect("text_entered", self, "set_param", [child.get_name()])
+			child.caret_blink = true
 	for child in input_colors.get_children():
 		if child.get_class() == "ColorPickerButton":
-			child.connect("color_changed", self, "set_color", [child.get_name()])		
+			child.connect("color_changed", self, "set_color", [child.get_name()])
+			#child.connect("picker_created", self, "mouse_in_ui")
+			#child.connect("popup_closed", self, "mouse_out_ui")
+			child.get_popup().connect("about_to_show", self, "color_picking")
+			child.get_popup().connect("popup_hide", self, "color_picked")
+	for child in input_visibility.get_children():
+		if child.get_class() == "CheckBox":
+			child.connect("toggled", self, "set_visibility", [child.get_name()])
+			
+	#set to see if mouse enters/exist
+	var inputs = [input_labels, input_colors, input_eq, input_visibility]
+	for ui in inputs:
+		for child in ui.get_children():
+			child.connect("mouse_entered", self, "mouse_in_ui")
+			child.connect("mouse_exited", self, "mouse_out_ui")
+			
+#set of functions to determine if mouse is in UI or not, determines if grid is movable	
+func color_picking():
+	is_color_picking = true
+	
+func color_picked():
+	is_color_picking = false
+		
+func mouse_in_ui():
+	is_mouse_in_ui = true
+	
+func mouse_out_ui():
+	is_mouse_in_ui = false
+	
+#sets visibilty of elements of grapher
+func set_visibility(_is_pressed, name):
+	#pressed means we WANT to show the item
+	match name:
+		"graph":
+			graph.visible = !graph.visible
+		"axis":
+			x_axis.visible = !x_axis.visible
+			y_axis.visible = !y_axis.visible
+		"label":
+			#label grid lines are special since they are regenerated each time we change graph
+			for line in (label_lines_x + label_lines_y):
+				line.visible = !line.visible
+		"images":
+			for tile in graph_tiles:
+				tile.visible = !tile.visible
 			
 #sets color of axis and lines
 func set_color(color, name):
-	print(name)
-	print(color)
+	#is_mouse_in_ui = true
 	match name:
 		"axis":
 			color_axis = color
+			x_axis.default_color = color
+			y_axis.default_color = color
 		"labels":
 			color_label_lines = color
+			#instead of drawing new lines, set to new color
+			for line in (label_lines_x + label_lines_y):
+				line.default_color = color
 		"graph":
 			color_graph_line = color
 			graph.default_color = color
-	draw_axis()
+	#draw_axis()
 			
 #sets parameters based on inputs
 func set_param(amount, name):
+	amount = amount.strip_edges(true, true) #strips off whitespaces from edges
+	if amount == "" or amount == null:
+		print("Invalid input.")
+		return
+	
 	if name == "equation":
 		#parse amount to be equation as function with respect to variable x
 		var error = equation.parse(amount, ["x"])
@@ -105,13 +193,25 @@ func set_param(amount, name):
 		#min cannot exceed max. max cannot be below min.
 		match name:
 			"minX":
-				min_x = amount
+				if amount < max_x:
+					min_x = amount
+				else:
+					print("Invalid min_x amount")
 			"maxX":
-				max_x = amount
+				if amount > min_x:
+					max_x = amount
+				else:
+					print("Invalid max_x amount")
 			"minY":
-				min_y = amount
+				if amount < max_y:
+					min_y = amount
+				else:
+					print("Invalid min_y amount")
 			"maxY":
-				max_y = amount
+				if amount > min_y:
+					max_y = amount
+				else:
+					print("Invalid max_y amount")
 			"stepX":
 				if amount != 0:
 					step_x = amount
@@ -126,7 +226,7 @@ func set_param(amount, name):
 				delta_x = amount
 			"deltaXImg":
 				delta_x_img = amount
-		draw_axis() #recalculate origin position first
+		draw_axis()
 		draw_graph()
 
 #draws x and y axis at y = 0, x = 0 based on graph window size
@@ -170,7 +270,7 @@ func draw_labels():
 	for i in range(min_x*(1/float(step_x)) - 1, max_x*(1/float(step_x)) + 1):
 		var graph_x = float(i)*step_x
 		var new_line = Line2D.new()
-		self.add_child(new_line)
+		self.add_child(new_line)	#suggested call_deffered as repeated change makes parent busy
 		#cosmetic changes. TO DO: make every nth line darker with modulus, and label graph_x.
 		new_line.width = 2
 		new_line.default_color = color_label_lines
@@ -192,9 +292,14 @@ func draw_labels():
 		new_line.z_index = -1
 		#draw scale lines parralel to x-axis
 		new_line.add_point(Vector2(0, convert_to_window_y(graph_y)))
-		new_line.add_point(Vector2(get_viewport_rect().size.x, convert_to_window_y(graph_y/step_y)))
+		new_line.add_point(Vector2(get_viewport_rect().size.x, convert_to_window_y(graph_y)))
 		#add line to array to keep track of
 		label_lines_y.append(new_line)
+		
+	#if label lines are not meant to be visible
+	if (not input_visibility.get_node("label").pressed): 
+		for line in (label_lines_x + label_lines_y):
+			line.visible = false
 	
 #calculates window real_step_x and real_step_y given graph step size and window size
 func calc_subdiv():
@@ -234,6 +339,10 @@ func draw_tile(position):
 	
 	tile.texture = tile_img
 	tile.position = position
+	
+	#setting to  hide images
+	if not input_visibility.get_node("images").pressed:
+		tile.visible = false
 	
 	graph_tiles.append(tile)
 		

@@ -7,6 +7,7 @@ onready var input_eq = $UI/equationInput
 onready var input_labels = $UI/labelInput
 onready var input_colors = $UI/colors
 onready var input_visibility = $UI/show
+onready var ui = $UI
 
 #graph tile image
 var tile_img = preload("res://icon.png")
@@ -98,6 +99,10 @@ func _input(event):
 			min_y += change_pos.y
 			call_deferred("draw_axis")
 			call_deferred("draw_graph")
+	if Input.is_action_pressed("ui_select"): #space key
+		ui.visible = false
+	else:
+		ui.visible = true
 		
 #connects line edits text inputs (press enter in line) to this
 func connect_to_input():
@@ -169,6 +174,9 @@ func set_color(color, name):
 		"graph":
 			color_graph_line = color
 			graph.default_color = color
+		"paper":
+			#set background color
+			VisualServer.set_default_clear_color(color)
 	#draw_axis()
 			
 #sets parameters based on inputs

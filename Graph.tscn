@@ -1,7 +1,84 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Graph.gd" type="Script" id=1]
-[ext_resource path="res://UI/UITheme.tres" type="Theme" id=2]
+[ext_resource path="res://UI/Stanberry.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://UI/GrayStyleBox.tres" type="StyleBox" id=3]
+[ext_resource path="res://UI/UITheme.tres" type="Theme" id=4]
+
+[sub_resource type="StyleBoxFlat" id=1]
+content_margin_left = 4.0
+content_margin_top = 2.0
+content_margin_bottom = 2.0
+bg_color = Color( 0.835294, 0.835294, 0.835294, 1 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0.658824, 0.658824, 0.658824, 1 )
+corner_detail = 5
+anti_aliasing = false
+
+[sub_resource type="DynamicFont" id=2]
+extra_spacing_top = 2
+extra_spacing_bottom = -3
+font_data = ExtResource( 2 )
+
+[sub_resource type="Theme" id=3]
+default_font = SubResource( 2 )
+CheckBox/colors/font_color = Color( 0.172549, 0.172549, 0.172549, 1 )
+CheckBox/colors/font_color_disabled = Color( 0.9, 0.9, 0.9, 0.2 )
+CheckBox/colors/font_color_hover = Color( 0.258824, 0.258824, 0.258824, 1 )
+CheckBox/colors/font_color_hover_pressed = Color( 0.160784, 0.160784, 0.160784, 1 )
+CheckBox/colors/font_color_pressed = Color( 0.129412, 0.129412, 0.129412, 1 )
+CheckBox/constants/check_vadjust = 0
+CheckBox/constants/hseparation = 4
+CheckBox/fonts/font = null
+CheckBox/icons/checked = null
+CheckBox/icons/radio_checked = null
+CheckBox/icons/radio_unchecked = null
+CheckBox/icons/unchecked = null
+CheckBox/styles/disabled = null
+CheckBox/styles/focus = null
+CheckBox/styles/hover = null
+CheckBox/styles/hover_pressed = null
+CheckBox/styles/normal = ExtResource( 3 )
+CheckBox/styles/pressed = ExtResource( 3 )
+ColorPicker/constants/h_width = 30
+ColorPicker/constants/label_width = 10
+ColorPicker/constants/margin = 4
+ColorPicker/constants/sv_height = 256
+ColorPicker/constants/sv_width = 256
+ColorPicker/icons/add_preset = null
+ColorPicker/icons/color_hue = null
+ColorPicker/icons/color_sample = null
+ColorPicker/icons/overbright_indicator = null
+ColorPicker/icons/preset_bg = null
+ColorPicker/icons/screen_picker = null
+ColorPickerButton/colors/font_color = Color( 0.309804, 0.309804, 0.309804, 1 )
+ColorPickerButton/colors/font_color_disabled = Color( 0.9, 0.9, 0.9, 0.3 )
+ColorPickerButton/colors/font_color_hover = Color( 0.168627, 0.168627, 0.168627, 1 )
+ColorPickerButton/colors/font_color_pressed = Color( 0, 0, 0, 1 )
+ColorPickerButton/constants/hseparation = 2
+ColorPickerButton/fonts/font = null
+ColorPickerButton/icons/bg = null
+ColorPickerButton/styles/disabled = null
+ColorPickerButton/styles/focus = null
+ColorPickerButton/styles/hover = null
+ColorPickerButton/styles/normal = null
+ColorPickerButton/styles/pressed = null
+LineEdit/colors/clear_button_color = Color( 0, 0, 0, 1 )
+LineEdit/colors/clear_button_color_pressed = Color( 0, 0, 0, 1 )
+LineEdit/colors/cursor_color = Color( 0, 0, 0, 1 )
+LineEdit/colors/font_color = Color( 0.176471, 0.176471, 0.176471, 1 )
+LineEdit/colors/font_color_selected = Color( 0, 0, 0, 1 )
+LineEdit/colors/font_color_uneditable = Color( 0, 0, 0, 0.501961 )
+LineEdit/colors/selection_color = Color( 0.49, 0.49, 0.49, 1 )
+LineEdit/constants/minimum_spaces = 12
+LineEdit/fonts/font = null
+LineEdit/icons/clear = null
+LineEdit/styles/focus = null
+LineEdit/styles/normal = ExtResource( 3 )
+LineEdit/styles/read_only = SubResource( 1 )
 
 [node name="Graph" type="Node2D"]
 script = ExtResource( 1 )
@@ -19,7 +96,7 @@ margin_left = 280.0
 margin_top = 134.0
 margin_right = 790.0
 margin_bottom = 480.0
-window_title = "Open a File"
+window_title = "Select an image to use for graphing"
 resizable = true
 mode = 0
 access = 2
@@ -29,14 +106,55 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="UI" type="CanvasLayer" parent="."]
+[node name="UI" type="Node2D" parent="."]
+z_index = 2
+
+[node name="labels" type="Node2D" parent="UI"]
+
+[node name="colorLabel" type="VBoxContainer" parent="UI/labels"]
+margin_left = 906.94
+margin_top = 476.335
+margin_right = 1010.94
+margin_bottom = 562.335
+mouse_filter = 2
+theme = SubResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="axis" type="LineEdit" parent="UI/labels/colorLabel"]
+margin_right = 104.0
+margin_bottom = 26.0
+editable = false
+placeholder_text = "Axis"
+
+[node name="grid" type="LineEdit" parent="UI/labels/colorLabel"]
+margin_top = 30.0
+margin_right = 104.0
+margin_bottom = 56.0
+editable = false
+placeholder_text = "Grid"
+
+[node name="graph" type="LineEdit" parent="UI/labels/colorLabel"]
+margin_top = 60.0
+margin_right = 104.0
+margin_bottom = 86.0
+editable = false
+placeholder_text = "Graph"
+
+[node name="paper" type="LineEdit" parent="UI/labels/colorLabel"]
+margin_top = 90.0
+margin_right = 104.0
+margin_bottom = 116.0
+editable = false
+placeholder_text = "Paper"
 
 [node name="labelInput" type="VBoxContainer" parent="UI"]
 margin_left = 924.0
 margin_top = 102.0
 margin_right = 1010.0
 margin_bottom = 266.0
-theme = ExtResource( 2 )
+theme = ExtResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -90,7 +208,7 @@ margin_left = 881.0
 margin_top = 9.0
 margin_right = 1012.0
 margin_bottom = 61.0
-theme = ExtResource( 2 )
+theme = ExtResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -98,7 +216,7 @@ __meta__ = {
 [node name="equation" type="LineEdit" parent="UI/equationInput"]
 margin_right = 131.0
 margin_bottom = 26.0
-placeholder_text = "y = "
+placeholder_text = "y = x"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -116,50 +234,65 @@ margin_bottom = 86.0
 placeholder_text = "deltaX for images"
 
 [node name="colors" type="VBoxContainer" parent="UI"]
-margin_left = 921.0
-margin_top = 514.0
-margin_right = 1008.0
-margin_bottom = 582.0
+margin_left = 952.941
+margin_top = 477.216
+margin_right = 1013.94
+margin_bottom = 589.216
+theme = ExtResource( 4 )
+custom_constants/separation = 8
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="axis" type="ColorPickerButton" parent="UI/colors"]
-margin_right = 87.0
-margin_bottom = 20.0
-text = "Axis Color"
+margin_right = 61.0
+margin_bottom = 22.0
 flat = true
+clip_text = true
 color = Color( 0.647059, 0.705882, 1, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="labels" type="ColorPickerButton" parent="UI/colors"]
-margin_top = 24.0
-margin_right = 87.0
-margin_bottom = 44.0
-text = "Grid Color"
+margin_top = 30.0
+margin_right = 61.0
+margin_bottom = 52.0
 flat = true
+clip_text = true
 color = Color( 0.862745, 0.890196, 0.909804, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="graph" type="ColorPickerButton" parent="UI/colors"]
-margin_top = 48.0
-margin_right = 87.0
-margin_bottom = 68.0
-text = "Graph Color"
+margin_top = 60.0
+margin_right = 61.0
+margin_bottom = 82.0
 flat = true
+clip_text = true
 color = Color( 0.388235, 0.447059, 0.905882, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="paper" type="ColorPickerButton" parent="UI/colors"]
+margin_top = 90.0
+margin_right = 61.0
+margin_bottom = 112.0
+flat = true
+clip_text = true
+color = Color( 0.92549, 0.92549, 0.92549, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="show" type="VBoxContainer" parent="UI"]
-margin_right = 129.0
-margin_bottom = 67.0
-theme = ExtResource( 2 )
+margin_left = 10.5946
+margin_top = 9.53517
+margin_right = 139.595
+margin_bottom = 125.535
+theme = ExtResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false
 }

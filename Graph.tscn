@@ -91,15 +91,16 @@ default_color = Color( 0.647059, 0.705882, 1, 1 )
 width = 5.0
 default_color = Color( 0.647059, 0.705882, 1, 1 )
 
-[node name="selectImage" type="FileDialog" parent="."]
+[node name="selectImg" type="FileDialog" parent="."]
 margin_left = 280.0
 margin_top = 134.0
 margin_right = 790.0
 margin_bottom = 480.0
-window_title = "Select an image to use for graphing"
+window_title = "Open a File"
 resizable = true
 mode = 0
 access = 2
+filters = PoolStringArray( "*.png", "*.jpg", "*.bmp", "*.jpeg", "*.svg", "*.svgz", ".dds" )
 current_dir = "/CodingProjects/DesmosButBetter"
 current_path = "/CodingProjects/DesmosButBetter/"
 __meta__ = {
@@ -110,6 +111,7 @@ __meta__ = {
 z_index = 2
 
 [node name="labels" type="Node2D" parent="UI"]
+position = Vector2( 5.41296, 5.06616 )
 
 [node name="colorLabel" type="VBoxContainer" parent="UI/labels"]
 margin_left = 906.94
@@ -233,60 +235,6 @@ margin_right = 131.0
 margin_bottom = 86.0
 placeholder_text = "deltaX for images"
 
-[node name="colors" type="VBoxContainer" parent="UI"]
-margin_left = 952.941
-margin_top = 477.216
-margin_right = 1013.94
-margin_bottom = 589.216
-theme = ExtResource( 4 )
-custom_constants/separation = 8
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="axis" type="ColorPickerButton" parent="UI/colors"]
-margin_right = 61.0
-margin_bottom = 22.0
-flat = true
-clip_text = true
-color = Color( 0.647059, 0.705882, 1, 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="labels" type="ColorPickerButton" parent="UI/colors"]
-margin_top = 30.0
-margin_right = 61.0
-margin_bottom = 52.0
-flat = true
-clip_text = true
-color = Color( 0.862745, 0.890196, 0.909804, 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="graph" type="ColorPickerButton" parent="UI/colors"]
-margin_top = 60.0
-margin_right = 61.0
-margin_bottom = 82.0
-flat = true
-clip_text = true
-color = Color( 0.388235, 0.447059, 0.905882, 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="paper" type="ColorPickerButton" parent="UI/colors"]
-margin_top = 90.0
-margin_right = 61.0
-margin_bottom = 112.0
-flat = true
-clip_text = true
-color = Color( 0.92549, 0.92549, 0.92549, 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="show" type="VBoxContainer" parent="UI"]
 margin_left = 10.5946
 margin_top = 9.53517
@@ -323,6 +271,90 @@ margin_right = 129.0
 margin_bottom = 116.0
 pressed = true
 text = "Show Images"
+
+[node name="upload" type="VBoxContainer" parent="UI"]
+margin_left = 6.12561
+margin_top = 508.061
+margin_right = 153.126
+margin_bottom = 594.061
+theme = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="tile" type="Button" parent="UI/upload"]
+margin_right = 147.0
+margin_bottom = 26.0
+text = "Upload Tile Image"
+
+[node name="bg" type="Button" parent="UI/upload"]
+margin_top = 30.0
+margin_right = 147.0
+margin_bottom = 56.0
+text = "Upload Background"
+
+[node name="screen" type="Button" parent="UI/upload"]
+margin_top = 60.0
+margin_right = 147.0
+margin_bottom = 86.0
+text = "Download Graph"
+
+[node name="colorPick" type="Node2D" parent="UI"]
+z_index = 6
+
+[node name="colors" type="VBoxContainer" parent="UI/colorPick"]
+margin_left = 959.353
+margin_top = 481.947
+margin_right = 1014.35
+margin_bottom = 600.947
+theme = ExtResource( 4 )
+custom_constants/separation = 4
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="axis" type="ColorPickerButton" parent="UI/colorPick/colors"]
+margin_right = 54.0
+margin_bottom = 26.0
+flat = true
+clip_text = true
+color = Color( 0.647059, 0.705882, 1, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="labels" type="ColorPickerButton" parent="UI/colorPick/colors"]
+margin_top = 30.0
+margin_right = 54.0
+margin_bottom = 56.0
+flat = true
+clip_text = true
+color = Color( 0.862745, 0.890196, 0.909804, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="graph" type="ColorPickerButton" parent="UI/colorPick/colors"]
+margin_top = 60.0
+margin_right = 54.0
+margin_bottom = 86.0
+flat = true
+clip_text = true
+color = Color( 0.388235, 0.447059, 0.905882, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="paper" type="ColorPickerButton" parent="UI/colorPick/colors"]
+margin_top = 90.0
+margin_right = 54.0
+margin_bottom = 116.0
+flat = true
+clip_text = true
+color = Color( 0.92549, 0.92549, 0.92549, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="background" type="CanvasLayer" parent="."]
 layer = -2

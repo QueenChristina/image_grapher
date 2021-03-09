@@ -5,9 +5,12 @@ onready var y_axis = $yAxis
 #get parameters from user
 onready var input_eq = $UI/equationInput
 onready var input_labels = $UI/labelInput
-onready var input_colors = $UI/colors
+onready var input_colors = $UI/colorPick/colors
 onready var input_visibility = $UI/show
+onready var input_file = $UI/upload
 onready var ui = $UI
+#file
+onready var popup_tile = $selectImg
 
 #graph tile image
 var tile_img = preload("res://icon.png")
@@ -100,10 +103,8 @@ func _input(event):
 			call_deferred("draw_axis")
 			call_deferred("draw_graph")
 	if Input.is_action_pressed("ui_select"): #space key
-		ui.visible = false
-	else:
-		ui.visible = true
-		
+		ui.visible = not ui.visible	
+
 #connects line edits text inputs (press enter in line) to this
 func connect_to_input():
 	for child in ( input_labels.get_children() + input_eq.get_children() ):
@@ -123,10 +124,78 @@ func connect_to_input():
 			
 	#set to see if mouse enters/exist
 	var inputs = [input_labels, input_colors, input_eq, input_visibility]
-	for ui in inputs:
-		for child in ui.get_children():
+	for interface in inputs:
+		for child in interface.get_children():
 			child.connect("mouse_entered", self, "mouse_in_ui")
 			child.connect("mouse_exited", self, "mouse_out_ui")
+			
+	#to connect to file upload buttons
+	for button in input_file.get_children():
+		button.connect("pressed", self, "open_file", [button.get_name()])
+		
+	#connect to file popup
+	popup_tile.connect("file_selected", self, "upload_tile")
+			
+#saves the drawing you made	
+func save_screenshot():
+	#var capture = get_viewport().get_screen_capture()
+	#https://godotengine.org/qa/13967/need-to-generate-and-save-textures-to-disk
+	#print(capture)
+	#saving and reading files https://docs.godotengine.org/en/stable/classes/class_file.html 
+	pass
+		
+#uploads tile image
+func upload_image():
+	pass
+		
+func open_file(name):
+	match name:
+		"tile": #change graph tile image
+			print("tile")
+			popup_tile.show()
+			#freeze game until finish image selection
+		"bg": #change background image
+			pass
+		"screen": #screenshot graph and download
+			pass
+			
+func upload_tile(file_path):
+	#https://docs.godotengine.org/en/stable/classes/class_file.html
+	tile_img = load(file_path)
+	draw_graph()
+	
+func load(file_path):
+	#https://www.reddit.com/r/godot/comments/eojihj/how_to_load_images_without_importer/
+	#var file = File.new()
+	var image = Image.new()
+	#https://godotengine.org/qa/50876/load-texture-from-file-and-assign-to-texture
+	#loading works inside res:// but not outside: 
+	#https://www.reddit.com/r/godot/comments/c0z076/cant_use_resourceloader_outside_res_godot_31/
+	#solution: https://godotengine.org/qa/1349/find-files-in-directories?show=1349#q1349
+	#https://github.com/godotengine/godot/issues/17848
+	
+	var err = image.load(file_path)
+	if err != OK:
+		# Failed
+		return
+	var texture = ImageTexture.new()
+	texture.create_from_image(image, 0)
+	return texture
+	
+	"""
+	file.open(file_path, File.READ)
+	match file_path.get_extension():
+		"png":
+			image.load_png_from_buffer(file.get_buffer(file.get_len()))
+		"jpg":
+			image.load_jpg_from_buffer(file.get_buffer(file.get_len()))
+	
+	#image.set_data(file.get_var())
+	file.close()
+	image.lock()
+	return image
+	#load(file_path)"""
+	
 			
 #set of functions to determine if mouse is in UI or not, determines if grid is movable	
 func color_picking():
